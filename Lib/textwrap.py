@@ -441,9 +441,16 @@ def dedent(text):
                     l1 = line
                 elif line > l2:
                     l2 = line
-            else:
-               val = True
-               l1 = l2 = line 
+            else:           
+                margin = len(line) - len(line.lstrip())
+
+                # The first line can usually determine the indentation of the rest of the file
+                if margin == 0:
+                    return '\n'.join([line if line and not line.isspace() else '' for line in lines])
+                
+                val = True    
+                l1 = line[:margin]
+                l2 = line 
                 
         else:
             lines[i] = ''
@@ -454,6 +461,7 @@ def dedent(text):
     for margin, c in enumerate(l1):
         if c != l2[margin] or c not in ' \t':
             break
+        margin += 1
 
     return '\n'.join([line[margin:] for line in lines])
 
